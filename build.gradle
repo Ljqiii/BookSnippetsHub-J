@@ -1,25 +1,36 @@
 plugins {
-    id "war"
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
     id 'java'
 }
 
-group 'com.ljqiii'
-version '1.0-SNAPSHOT'
+apply plugin: 'io.spring.dependency-management'
 
-sourceCompatibility = 1.8
+group = 'com.ljqiii'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "org.springframework:spring-webmvc:5.1.4.RELEASE"
-    compile "org.apache.commons:commons-lang3:3.8.1"
-    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
-    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-    providedCompile "javax.servlet:javax.servlet-api:4.0.1"
-
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile "org.mockito:mockito-core:2.23.4"
-    testImplementation "org.springframework:spring-test:5.1.4.RELEASE"
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }

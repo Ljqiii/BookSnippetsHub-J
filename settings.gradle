@@ -1,2 +1,6 @@
-rootProject.name = 'BookSnippetsHub-Spring'
-
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'booksnippetshub-j'
