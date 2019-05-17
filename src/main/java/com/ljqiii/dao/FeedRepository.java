@@ -1,27 +1,27 @@
 package com.ljqiii.dao;
 
-import com.ljqiii.model.WxAccount;
+import com.ljqiii.model.Feed;
+import com.ljqiii.model.T;
 import org.apache.ibatis.annotations.*;
-import org.springframework.security.core.userdetails.UserDetails;
 
 
 @Mapper
-public interface WxAccountRepository {
+public interface FeedRepository {
 
-    @Select("select * from wxaccount where openid=#{openid} limit 1")
-    WxAccount findByOpenid(String openid);
+    @Select("select * from feed where id=#{id} limit 1")
+    Feed findById(int id);
 
-    @Select("select * from wxaccount where id=#{id} limit 1")
-    WxAccount findById(Integer id);
-
-
-    @Insert("insert into wxaccount (openid,session_key) value(#{openId},#{sessionKey})")
-    @Options(useGeneratedKeys = true,keyProperty = "id")
-    int insertOneByWxAccount(WxAccount wxAccount);
+    @Insert("insert into feed (openid,fromopenid,backgroundimageid,bookid,bookcontent,bookcomment)values (#{openid},#{fromopenid},#{backgroundimageid},#{bookid},#{bookcontent},#{bookcomment})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertByFeed(Feed feed);
 
 
-    @Update("update wxaccount set nickname=#{nickName},gender=#{gender},city=#{city},province=#{province},country=#{country},avatarUrl=#{avatarUrl} where id=#{id}")
-    int updateByWxAccount(WxAccount wxAccount);
+    @Select("select * from feed where openid=#{openid}")
+    Feed[] findByOpenid(String openid);
+
+    @Delete("delete from feed where id=#{id}")
+    int deleteById(int id);
+
 
 
 }

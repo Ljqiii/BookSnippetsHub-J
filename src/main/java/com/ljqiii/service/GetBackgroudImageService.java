@@ -1,4 +1,10 @@
 package com.ljqiii.service;
 
-public class GetBackgroudImage {
+import org.springframework.stereotype.Service;
+
+@Service
+public class GetBackgroudImageService {
+
+
+
 }

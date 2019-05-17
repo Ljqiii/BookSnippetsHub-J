@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 
 @Component
-public class JwtAuthorizationManager implements AuthenticationManager {
+public class JwtLoginAuthorizationManager implements AuthenticationManager {
 
     @Autowired
     JwtTokenService jwtTokenService;
@@ -37,6 +37,7 @@ public class JwtAuthorizationManager implements AuthenticationManager {
 
     @Autowired
     HttpServletRequest httpServletRequest;
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -61,7 +62,7 @@ public class JwtAuthorizationManager implements AuthenticationManager {
             ArrayList<SimpleGrantedAuthority> grantedAuthoritys = new ArrayList<>();
             grantedAuthoritys.add(new SimpleGrantedAuthority("ROLE_WXUSER"));
 
-            String jwt_token = jwtTokenService.generateToken(openid);
+            String jwt_token = jwtTokenService.generateToken(wxAccount.getUsername());
 
             WxAuthenticationToken authenticationToken = new WxAuthenticationToken(wxAccount, jwt_token, grantedAuthoritys);
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

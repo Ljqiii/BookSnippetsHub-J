@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class WxUserDetail implements UserDetailsService {
+public class WxUserDetailService implements UserDetailsService {
 
 
     @Autowired
@@ -21,14 +21,12 @@ public class WxUserDetail implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UserDetails wxAccount= wxAccountRepository.findByOpenid(username);
+
         if(wxAccount==null){
             throw new UsernameNotFoundException("wx account not found");
         }
         else {
-
         return wxAccount;
         }
     }
-
-
 }

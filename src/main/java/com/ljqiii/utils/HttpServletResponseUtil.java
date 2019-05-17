@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 
 public class HttpServletResponseUtil {
 
-    public static void returnJson(HttpServletResponse httpServletResponse, String jsonString) throws IOException {
+    public static void returnString(HttpServletResponse httpServletResponse, String jsonString) throws IOException {
 
         httpServletResponse.setHeader("content-type", "application/json");
         PrintWriter out = httpServletResponse.getWriter();

@@ -1,4 +1,4 @@
-package com.ljqiii.utils;
+package com.ljqiii.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -7,41 +7,54 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class JwtTokenUtil {
+@Service
+public class JwtTokenService {
+
+    @Value("${jwt.expiretime}")
+    long EXPIRE_TIME;
 
 
-    static long EXPIRE_TIME = 7200;
-    static String JWT_SECERT = "secert";
+    Algorithm JWT_ALGORITHM;
 
-    static Algorithm JWT_ALGORITHM = Algorithm.HMAC256(JWT_SECERT);
 
-    public static String generateToken(String openid) {
+    public JwtTokenService(@Value("${jwt.secert}") String JWT_SECERT){
+        JWT_ALGORITHM = Algorithm.HMAC256(JWT_SECERT);
+    }
+
+    public String generateToken(String openid) {
+
         long now = System.currentTimeMillis();
         Date date = new Date(now + EXPIRE_TIME);
+
+        System.out.println("EXPIRE_TIME" + EXPIRE_TIME);
+        System.out.println("now date" + new Date(now).toString());
+        System.out.println("expire date" + date.toString());
+
         String token = JWT.create()
-                .withClaim("openid", openid)
+                .withClaim("id", openid)
                 .withExpiresAt(date)
                 .sign(JWT_ALGORITHM);
         return token;
-
     }
 
-    public static String VerifyToken(String token) {
+    public Integer VerifyToken(String token) {
+
         JWTVerifier jwtVerifier = JWT.require(JWT_ALGORITHM).build();
         try {
             DecodedJWT decodedJWT = jwtVerifier.verify(token);
-            String openid = decodedJWT.getClaim("openid").asString();
-            return openid;
+            return Integer.valueOf(decodedJWT.getClaim("id").asString());
         } catch (TokenExpiredException e) {
-            return null;
+            throw new TokenExpiredException("TokenExpiredException");
+        } catch (SignatureVerificationException e) {
+            throw new SignatureVerificationException(JWT_ALGORITHM);
         }
-        catch (SignatureVerificationException e){
-            return null;
-        }
-
-
     }
 }

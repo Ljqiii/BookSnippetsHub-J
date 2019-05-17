@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilter {
+public class JwtLoginAuthorizationFilter extends AbstractAuthenticationProcessingFilter {
 
 
-    public JwtAuthorizationFilter(String defaultFilterProcessesUrl) {
+    public JwtLoginAuthorizationFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
     }
 
@@ -50,7 +50,8 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        System.out.println("In JwtAuthorizationFilter");
+
+        System.out.println("In JwtLoginAuthorizationFilter");
         String requestbody = HttpServletRequestUtil.RequestBody2String(request);
         System.out.println(requestbody);
 

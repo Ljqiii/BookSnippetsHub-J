@@ -1,21 +1,30 @@
 package com.ljqiii.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.ljqiii.dao.BackgroundImageRepository;
 import com.ljqiii.dao.WxAccountRepository;
+import com.ljqiii.model.BackgroundImage;
 import com.ljqiii.model.WxAccount;
+import com.ljqiii.service.BackgroundImageService;
+import com.ljqiii.service.UploadFileService;
 import com.ljqiii.service.WxAccountServiceImpl;
+import org.apache.ibatis.javassist.ClassPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class test {
@@ -29,23 +38,32 @@ public class test {
     @Value("${wx.appid}")
     private String appName;
 
+    @Autowired
+    BackgroundImageRepository backgroundImageRepository;
+
+    @Autowired
+    BackgroundImageService backgroundImageService;
 
     @Autowired
     WxAccountServiceImpl wxAccountService;
 
 
-    @RequestMapping(value = "/testa", method = RequestMethod.GET)
-    public String testa(HttpServletRequest httpServletRequest) throws IOException {
+    @Autowired
+    UploadFileService uploadFileService;
 
-        WxAccountServiceImpl a=wxAccountService;
+    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+    public JSONObject testa(HttpServletRequest httpServletRequest) throws IOException {
+        return backgroundImageService.getAllBackgroundImage();
+    }
 
-
-
-
-        return appName;
-//        return stringBuilder.toString();
-
-
+    @PostMapping("/testupload")
+    public String testupload(@RequestParam("file") MultipartFile file) throws IOException {
+        return uploadFileService.uuidImg(file);
+    }
+    @GetMapping("/testuser")
+    public String tu(Principal principal){
+        int a=1;
+        return principal.toString();
     }
 
     @RequestMapping(value = "/testinsert", method = RequestMethod.GET)

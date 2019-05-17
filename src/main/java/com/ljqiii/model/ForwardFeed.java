@@ -1,9 +1,10 @@
 package com.ljqiii.model;
 
-public class FeedLike {
+public class ForwardFeed {
     int id;
-
     int feedid;
+    String feedopenid;
+
     String openid;
 
     public int getId() {
@@ -20,6 +21,14 @@ public class FeedLike {
 
     public void setFeedid(int feedid) {
         this.feedid = feedid;
+    }
+
+    public String getFeedopenid() {
+        return feedopenid;
+    }
+
+    public void setFeedopenid(String feedopenid) {
+        this.feedopenid = feedopenid;
     }
 
     public String getOpenid() {

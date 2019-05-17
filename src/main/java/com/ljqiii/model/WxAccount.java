@@ -1,6 +1,14 @@
 package com.ljqiii.model;
 
-public class WxAccount {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class WxAccount implements UserDetails {
     int id;
 
     String openId;
@@ -101,4 +109,46 @@ public class WxAccount {
         this.country = country;
         this.avatarUrl = avatarUrl;
     }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        ArrayList<SimpleGrantedAuthority> grantedAuthoritys = new ArrayList<>();
+        grantedAuthoritys.add(new SimpleGrantedAuthority("ROLE_WXUSER"));
+
+        return grantedAuthoritys;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return String.valueOf(id);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
 }

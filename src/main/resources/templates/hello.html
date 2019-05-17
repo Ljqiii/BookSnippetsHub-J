@@ -1,10 +1,16 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Hello</title>
 </head>
 <body>
-<hello></hello>
+<form action="/testupload" method="post" enctype="multipart/form-data">
+    <input type="text" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <input type="file" name="file">
+    <input type="submit">
+</form>
 </body>
 </html>

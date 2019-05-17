@@ -10,7 +10,7 @@ public class WxUser implements GrantedAuthority {
     }
 
     public WxUser() {
-        this.authority="wxuser";
+        this.authority="ROLE_WXUSER";
     }
 
     public WxUser(String authority) {

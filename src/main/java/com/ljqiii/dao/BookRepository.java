@@ -1,23 +1,25 @@
 package com.ljqiii.dao;
 
+import com.ljqiii.model.Book;
 import com.ljqiii.model.Feed;
 import com.ljqiii.model.WxAccount;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
 
 
 @Mapper
-public interface FeedRepository {
+public interface BookRepository {
 
-    @Select("select * from feed where id=#{id} limit 1")
-    WxAccount findById(String id);
+    @Select("select * from book where id=#{id} limit 1")
+    Book findById(int id);
 
-    @Insert("insert into feed (openid,backgroundimageid,bookname,bookcontent,bookcomment)values (#{openid},#{backgroundimageid},#{bookname},#{bookcontent},#{bookcomment})")
+    @Insert("insert into book (name,bookcoverimg,description)values (#{name},#{bookcoverimg},#{description})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    Feed insertByFeed(Feed feed);
+    int insertByBook(Book book);
 
-    @Select("select * from feed where openid=#{openid}")
-    Feed[] findByOpenid(String openid);
-
-
+    @Select("select * from book where name=#{name}")
+    Book findByName(String name);
 
 }
