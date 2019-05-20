@@ -22,4 +22,11 @@ public interface BookRepository {
     @Select("select * from book where name=#{name}")
     Book findByName(String name);
 
+    @Select("select * from book")
+    Book[] findAllBook();
+
+    Book[] selectAllBookLikeByOpenid(String openid);
+
+
+
 }

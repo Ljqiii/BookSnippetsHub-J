@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
 @RestController
-public class Notification {
+public class NotificationController {
 
     @Autowired
     NotificationService notificationService;

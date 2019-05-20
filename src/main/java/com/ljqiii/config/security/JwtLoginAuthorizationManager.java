@@ -4,6 +4,7 @@ import com.ljqiii.config.security.GrantedAuthority.WxAuthenticationToken;
 import com.ljqiii.dao.WxAccountRepository;
 import com.ljqiii.model.WxAccount;
 import com.ljqiii.service.JwtTokenService;
+import com.ljqiii.service.NotificationService;
 import com.ljqiii.service.WxAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +39,9 @@ public class JwtLoginAuthorizationManager implements AuthenticationManager {
     @Autowired
     HttpServletRequest httpServletRequest;
 
+    @Autowired
+    NotificationService notificationService;
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -53,8 +57,9 @@ public class JwtLoginAuthorizationManager implements AuthenticationManager {
             throw new BadJsCodeException("verify fail");
         } else {
 
-            UserDetails wxAccount = wxAccountRepository.findByOpenid(openid);
+              UserDetails wxAccount = wxAccountRepository.findByOpenid(openid);
             if (wxAccount == null) {
+                notificationService.insertSystemNotification(openid,"欢迎来到读书分享");
                 wxAccountRepository.insertOneByWxAccount(new WxAccount(openid, ""));
                 wxAccount = wxAccountRepository.findByOpenid(openid);
             }

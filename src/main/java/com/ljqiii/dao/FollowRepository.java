@@ -17,9 +17,14 @@ public interface FollowRepository {
     @Select("select count(*) from follow where followopenid=#{followopenid}")
     int selectFollowersCountByOpenid(String followopenid);
 
+    @Select("select count(*) from follow where followopenid=#{openId}")
+    int selectFollowersCountByWxaccount(WxAccount wxAccount);
 
     @Select("select count(*) from follow where openid=#{openId}")
-    int selectFollowersCountByWxaccount(WxAccount wxAccount);
+    int selectFollowsCountByWxaccount(WxAccount wxAccount);
+
+    @Select("select count(*) from follow where openid=#{openId}")
+    int selectFollowsCountByOpenId(String openid);
 
     @Delete("delete from follow where openid=#{openid} and followopenid=#{followopenid}")
     int removeFollowerByFollow(Follow follow);

@@ -6,11 +6,14 @@ import com.ljqiii.config.security.GrantedAuthority.WxAuthenticationToken;
 import com.ljqiii.model.Feed;
 import com.ljqiii.model.WxAccount;
 import com.ljqiii.service.FeedService;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 
 @RestController
 public class FeedController {
@@ -35,4 +38,16 @@ public class FeedController {
         }
         return respone;
     }
+
+
+
+    @PostMapping("/getrecommendfeed")
+    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
+    public ArrayList<JSONObject> getrecommendfeed(WxAuthenticationToken wxAuthenticationToken,@RequestBody JSONObject requestjson){
+        WxAccount wxAccount=(WxAccount) wxAuthenticationToken.getPrincipal();
+        ArrayList<Integer> notin=requestjson.getObject("allrecommendfeedsid",ArrayList.class);
+
+        return feedService.getFeedRand(10,notin);
+    }
+
 }

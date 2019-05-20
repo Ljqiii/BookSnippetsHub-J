@@ -43,7 +43,7 @@ public class Login {
     }
 
 
-
+    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
     @PostMapping("/auth/uploadWxUserinfo")
     public String uploadWxUserinfo(@RequestBody JSONObject userinfo, WxAuthenticationToken wxAuthenticationToken) throws IOException {
 

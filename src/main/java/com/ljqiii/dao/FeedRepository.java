@@ -1,8 +1,10 @@
 package com.ljqiii.dao;
 
 import com.ljqiii.model.Feed;
-import com.ljqiii.model.T;
+import com.ljqiii.model.WxAccount;
 import org.apache.ibatis.annotations.*;
+
+import java.util.ArrayList;
 
 
 @Mapper
@@ -22,6 +24,15 @@ public interface FeedRepository {
     @Delete("delete from feed where id=#{id}")
     int deleteById(int id);
 
+    @Select("select count(*) from feed where openid=#{openId}")
+    int selectFeedCountByWxAccount(WxAccount wxAccount);
+
+    @Select("select count(*) from feed where openid=#{openid}")
+    int selectFeedCountByOpenId(String openid);
+
+    Feed[] findFeedRand(int count, ArrayList<Integer> notin);
+
+    Feed[] findFeedByBookid(int count, ArrayList<Integer> notin, int bookid);
 
 
 }

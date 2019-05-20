@@ -5,5 +5,7 @@
 <mapper namespace="com.ljqiii.dao.BookRepository">
 
 
-
+    <select id="selectAllBookLikeByOpenid" resultType="com.ljqiii.model.Book">
+        select * from book where book.id in (select booklike.bookid as id from booklike where openid = #{openid});
+    </select>
 </mapper>

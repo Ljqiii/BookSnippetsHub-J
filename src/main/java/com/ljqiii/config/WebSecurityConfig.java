@@ -47,7 +47,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
+        http.authorizeRequests().antMatchers("/error").permitAll();
         http.authorizeRequests().antMatchers("/druid/**").permitAll();
+        http.authorizeRequests().antMatchers("/**").permitAll();
+        http.authorizeRequests().antMatchers("/sysimg/**").permitAll();
         http.authorizeRequests().antMatchers("/test**").permitAll();
         http.authorizeRequests().antMatchers("/favicon.ico").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/test**").permitAll();
