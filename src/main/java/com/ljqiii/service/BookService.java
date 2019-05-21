@@ -25,6 +25,8 @@ public class BookService {
         return bookRepository.findAllBook();
     }
 
+
+
     public Book[] getLikeBook(String openid){
         return null;
     }
@@ -41,8 +43,6 @@ public class BookService {
     public Book[] selectAllBookLikeByOpenid(String openid){
         return bookRepository.selectAllBookLikeByOpenid(openid);
     }
-
-
 
 
 }

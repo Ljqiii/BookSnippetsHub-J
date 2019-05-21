@@ -40,14 +40,29 @@ public class FeedController {
     }
 
 
+    @PostMapping("/getbookfeed")
+    public ArrayList<JSONObject> getFeedByBook(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
+        ArrayList<Integer> notin = requestjson.getObject("allfeedid", ArrayList.class);
+        int bookid = requestjson.getInteger("bookid");
+        return feedService.getFeedByBookid(10, notin, bookid);
+    }
+
+    @PostMapping("/getfeed")
+    public ArrayList<JSONObject> getFeedById(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
+        int feedid=requestjson.getInteger("feedid");
+        return feedService.getFeedById(feedid);
+    }
+
 
     @PostMapping("/getrecommendfeed")
-    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
-    public ArrayList<JSONObject> getrecommendfeed(WxAuthenticationToken wxAuthenticationToken,@RequestBody JSONObject requestjson){
-        WxAccount wxAccount=(WxAccount) wxAuthenticationToken.getPrincipal();
-        ArrayList<Integer> notin=requestjson.getObject("allrecommendfeedsid",ArrayList.class);
+    public ArrayList<JSONObject> getrecommendfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        ArrayList<Integer> notin = requestjson.getObject("allrecommendfeedsid", ArrayList.class);
 
-        return feedService.getFeedRand(10,notin);
+        return feedService.getFeedRand(10, notin);
     }
+
+
+
 
 }

@@ -35,4 +35,5 @@ public interface FeedRepository {
     Feed[] findFeedByBookid(int count, ArrayList<Integer> notin, int bookid);
 
 
+
 }

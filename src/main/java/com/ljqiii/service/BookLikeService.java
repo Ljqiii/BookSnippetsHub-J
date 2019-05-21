@@ -38,8 +38,20 @@ public class BookLikeService {
     }
 
     public boolean deleteLikeBook(WxAccount wxAccount, int bookid) {
-        bookLikeRepository.insert(wxAccount.getOpenId(), bookid);
+        bookLikeRepository.delete(wxAccount.getOpenId(), bookid);
         return true;
     }
 
+    public boolean deleteLikeBook(String openid, int bookid) {
+        bookLikeRepository.delete(openid, bookid);
+        return true;
+    }
+
+    public boolean islike(String openid, int bookid) {
+        if (bookLikeRepository.count(openid, bookid) != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

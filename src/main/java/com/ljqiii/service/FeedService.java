@@ -3,15 +3,13 @@ package com.ljqiii.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ljqiii.dao.*;
-import com.ljqiii.model.BackgroundImage;
-import com.ljqiii.model.Book;
-import com.ljqiii.model.Feed;
-import com.ljqiii.model.WxAccount;
+import com.ljqiii.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -33,10 +31,15 @@ public class FeedService {
     @Autowired
     FeedRepository feedRepository;
 
+    @Autowired
+    FeedCommentRepository feedCommentRepository;
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+
     public boolean addSelfFeed(JSONObject requestjson, String openid) {
         return addFeed(requestjson, openid, openid);
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED)
     public boolean addFeed(JSONObject requestjson, String openid, String fromopenid) {
@@ -63,7 +66,7 @@ public class FeedService {
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> feedResopne(Feed[] feeds) {
+    public ArrayList<JSONObject> feedResopne(Feed[] feeds, String from) {
 
         ArrayList<JSONObject> jsonObjects = new ArrayList<>();
 
@@ -79,11 +82,14 @@ public class FeedService {
             }
 
 
+            temp.put("from", from);
             temp.put("bookname", feed.getBookid());
             Date date = feed.getFeedtime();
 
-            temp.put("time", feed.getFeedtime());
 
+            temp.put("time", simpleDateFormat.format(feed.getFeedtime()));
+
+            //书籍
             Book book = bookRepository.findById(feed.getBookid());
             if (book != null) {
                 temp.put("bookname", book.getName());
@@ -93,12 +99,13 @@ public class FeedService {
                 temp.put("bookid", "");
 //                continue;
             }
+            temp.put("id", feed.getId());
             temp.put("bookcontent", feed.getBookcontent());
             temp.put("bookcomment", feed.getBookcomment());
-            temp.put("id", feed.getId());
 
+            //微信用户
             String fromopenid = feed.getFromopenid();
-            WxAccount wxAccount = wxAccountRepository.findByOpenid(fromopenid);
+            WxAccount wxAccount = wxAccountRepository.findByOpenid(feed.getOpenid());
             if (wxAccount != null) {
                 temp.put("nickname", wxAccount.getNickName());
                 temp.put("avatarUrl", wxAccount.getAvatarUrl());
@@ -110,15 +117,34 @@ public class FeedService {
             }
 
 
+            //评论
+            int userfeedcommentcount = feedCommentRepository.usercounts(feed.getId(), wxAccount.getOpenId());
+            if (userfeedcommentcount != 0) {
+                temp.put("iscomment", true);
+            } else {
+                temp.put("iscomment", false);
+            }
+            int feedcommentaccount = feedCommentRepository.count(feed.getId());
+            temp.put("commentcount", feedcommentaccount);
+
+            //转载
+            if (feed.getFromopenid().equals(feed.getOpenid())) {
+                temp.put("isforward", false);
+            } else {
+                temp.put("isforward", true);
+            }
+
+
+            //喜欢
             int likecount = feedLikeRepository.selectFeedLikeCount(feed.getId());
-            int isthisuserlike = feedLikeRepository.selectCountByFeedIdOpenid(feed.getId(), fromopenid);
+            int isthisuserlike = feedLikeRepository.selectCountByFeedIdOpenid(feed.getId(), feed.getOpenid());
 
             temp.put("likecount", likecount);
 
-            if (isthisuserlike == 0) {
-                temp.put("isliked", false);
-            } else {
+            if (isthisuserlike != 0) {
                 temp.put("isliked", true);
+            } else {
+                temp.put("isliked", false);
             }
 
             jsonObjects.add(temp);
@@ -128,18 +154,31 @@ public class FeedService {
     }
 
 
+//    @Transactional(propagation = Propagation.REQUIRED)
+//    public ArrayList<JSONObject> getFeedByBook(int count, ArrayList<Integer> notin,int bookid) {
+//        Feed[] feeds=feedRepository.findFeedByBookid(10,notin,bookid);
+//        return feedResopne(feeds,"bookid");
+//    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getFeedRand(int count, ArrayList<Integer> notin) {
         Feed[] feeds = feedRepository.findFeedRand(count, notin);
-        return feedResopne(feeds);
+        return feedResopne(feeds, "recommand");
     }
 
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getFeedByBookid(int count, ArrayList<Integer> notin, int bookid) {
         Feed[] feeds = feedRepository.findFeedByBookid(count, notin, bookid);
-
-        return feedResopne(feeds);
-
+        return feedResopne(feeds, "book");
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ArrayList<JSONObject> getFeedById(int bookid) {
+        Feed[] feeds = new Feed[1];
+        feeds[0] = feedRepository.findById(bookid);
+        return feedResopne(feeds, "feedid");
+    }
+
+
 }
