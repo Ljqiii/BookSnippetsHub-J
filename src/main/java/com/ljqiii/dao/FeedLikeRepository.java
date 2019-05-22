@@ -13,11 +13,13 @@ public interface FeedLikeRepository {
     @Select("select count(*) from feedlike where feedid=#{feedid}")
     int selectFeedLikeCount(@Param("feedid") int feedid);
 
-    @Insert("insert into feedlike(feedid, openid) values (#{arg0},#{arg1})")
-    int insert(int feedid,String openid);
+    @Insert("insert into feedlike(feedid, openid) values (#{feedid},#{openid})")
+    int insert(@Param("feedid") int feedid,@Param("openid") String openid);
 
+    @Insert(" delete from feedlike where  feedid=#{feedid} and openid=#{openid}")
+    int delete(@Param("feedid") int feedid,@Param("openid") String openid);
 
-    @Select("select  count(*) from  feedlike where feedid=#{arg0} and openid=#{arg1}")
-    int selectCountByFeedIdOpenid(int feedid, String openid);
+    @Select("select  count(*) from  feedlike where feedid=#{feedid} and openid=#{openid}")
+    int selectCountByFeedIdOpenid(@Param("feedid") int feedid,@Param("openid") String openid);
 
 }

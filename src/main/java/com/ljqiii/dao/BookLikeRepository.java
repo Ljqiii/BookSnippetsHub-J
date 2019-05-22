@@ -23,16 +23,16 @@ public interface BookLikeRepository {
     BookLike[] findAllByOpenid(String openid);
 
 
-    @Select("insert into booklike (openid, bookid)values (#{arg0},#{arg1})")
-    void insert(String openid, int bookid);
+    @Select("insert into booklike (openid, bookid)values (#{openid},#{bookid})")
+    void insert(@Param("openid") String openid,@Param("bookid") int bookid);
 
-    @Delete("delete from booklike where openid=#{arg0} and bookid=#{arg1}")
-    int delete(String openid, int bookid);
+    @Delete("delete from booklike where openid=#{openid} and bookid=#{bookid}")
+    int delete(@Param("openid") String openid, @Param("bookid") int bookid);
 
     @Delete("delete from booklike where openid=#{openid} and bookid=#{bookid}")
     int deleteByBookidLike(BookLike bookLike);
 
-    @Select("select count(*) from booklike where openid=#{arg0} and bookid=#{arg1}")
-    int count(String openid, int bookid);
+    @Select("select count(*) from booklike where openid=#{openid} and bookid=#{bookid}")
+    int count(@Param("openid") String openid,@Param("bookid") int bookid);
 
 }

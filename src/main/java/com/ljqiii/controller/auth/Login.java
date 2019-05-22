@@ -33,6 +33,8 @@ public class Login {
         JSONObject jsonrestlt = new JSONObject();
         jsonrestlt.put("errcode", "0");
         jsonrestlt.put("token", token);
+        jsonrestlt.put("userid", wxAccount.getId());
+
 
         if (wxAccount.getNickName() == null) {
             jsonrestlt.put("hasuserinfo", false);

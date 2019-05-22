@@ -4,27 +4,41 @@
 
     <select id="findFeedRand" resultType="com.ljqiii.model.Feed">
         select * from feed
-        <if test="arg1.size()!=0">
+        <if test="notin.size()!=0">
             where id not in (
-            <foreach collection="arg1" separator="," item="item">
+            <foreach collection="notin" separator="," item="item">
                 #{item}
             </foreach>
             )
         </if>
-        order by rand() limit #{arg0}
+        order by rand() limit #{count}
     </select>
 
 
     <select id="findFeedByBookid" resultType="com.ljqiii.model.Feed">
-        select * from feed where bookid=#{arg2}
-        <if test="arg1.size()!=0">
+        select * from feed where bookid=#{bookid}
+        <if test="notin.size()!=0">
             and id not in (
-            <foreach collection="arg1" separator="," item="item">
+            <foreach collection="notin" separator="," item="item">
                 #{item}
             </foreach>
             )
         </if>
-        order by feedtime limit #{arg0}
+        order by feedtime limit #{count}
+    </select>
+
+
+
+    <select id="findFeedByOpenid" resultType="com.ljqiii.model.Feed">
+        select * from feed where openid=#{openid}
+        <if test="notin.size()!=0">
+            and id not in (
+            <foreach collection="notin" separator="," item="item">
+                #{item}
+            </foreach>
+            )
+        </if>
+        order by feedtime limit #{count}
     </select>
 
 

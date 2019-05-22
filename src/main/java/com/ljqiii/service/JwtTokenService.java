@@ -46,6 +46,7 @@ public class JwtTokenService {
     }
 
     public Integer VerifyToken(String token) {
+        System.out.println("token: "+token);
 
         JWTVerifier jwtVerifier = JWT.require(JWT_ALGORITHM).build();
         try {

@@ -34,6 +34,9 @@ public class FeedService {
     @Autowired
     FeedCommentRepository feedCommentRepository;
 
+    @Autowired
+    FollowRepository followRepository;
+
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 
@@ -89,6 +92,7 @@ public class FeedService {
 
             temp.put("time", simpleDateFormat.format(feed.getFeedtime()));
 
+
             //书籍
             Book book = bookRepository.findById(feed.getBookid());
             if (book != null) {
@@ -103,17 +107,32 @@ public class FeedService {
             temp.put("bookcontent", feed.getBookcontent());
             temp.put("bookcomment", feed.getBookcomment());
 
+
+
             //微信用户
             String fromopenid = feed.getFromopenid();
             WxAccount wxAccount = wxAccountRepository.findByOpenid(feed.getOpenid());
             if (wxAccount != null) {
                 temp.put("nickname", wxAccount.getNickName());
                 temp.put("avatarUrl", wxAccount.getAvatarUrl());
+                //发表feed的用户id
+                temp.put("userid", wxAccount.getId());
             } else {
+                temp.put("userid", -1);
                 temp.put("nickname", "");
                 temp.put("avatarUrl", "");
 //                continue;
 
+            }
+
+            //是否关注
+            String feedopenid = feed.getOpenid();
+
+            int c = followRepository.selectisfollow(wxAccount.getOpenId(), feedopenid);
+            if (c != 0) {
+                temp.put("isfollow", true);
+            } else {
+                temp.put("isfollow", false);
             }
 
 
@@ -171,6 +190,12 @@ public class FeedService {
     public ArrayList<JSONObject> getFeedByBookid(int count, ArrayList<Integer> notin, int bookid) {
         Feed[] feeds = feedRepository.findFeedByBookid(count, notin, bookid);
         return feedResopne(feeds, "book");
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ArrayList<JSONObject> getFeedByOpenid(int count, ArrayList<Integer> notin, String openid) {
+        Feed[] feeds = feedRepository.findFeedByOpenid(count, notin, openid);
+        return feedResopne(feeds, "openid");
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

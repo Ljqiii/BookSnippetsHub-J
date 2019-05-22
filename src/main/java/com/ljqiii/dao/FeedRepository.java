@@ -30,10 +30,11 @@ public interface FeedRepository {
     @Select("select count(*) from feed where openid=#{openid}")
     int selectFeedCountByOpenId(String openid);
 
-    Feed[] findFeedRand(int count, ArrayList<Integer> notin);
+    Feed[] findFeedRand(@Param("count") int count, @Param("notin") ArrayList<Integer> notin);
 
-    Feed[] findFeedByBookid(int count, ArrayList<Integer> notin, int bookid);
+    Feed[] findFeedByBookid(@Param("count") int count, @Param("notin") ArrayList<Integer> notin, @Param("bookid") int bookid);
 
+    Feed[] findFeedByOpenid(@Param("count") int count, @Param("notin") ArrayList<Integer> notin, @Param("openid") String openid);
 
 
 }
