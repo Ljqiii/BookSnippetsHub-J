@@ -4,6 +4,7 @@ package com.ljqiii.service;
 import com.alibaba.fastjson.JSONObject;
 import com.ljqiii.dao.*;
 import com.ljqiii.model.*;
+import com.ljqiii.utils.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,6 +16,9 @@ import java.util.Date;
 
 @Service
 public class FeedService {
+
+    @Autowired
+    BookService bookService;
 
     @Autowired
     BackgroundImageRepository backgroundImageRepository;
@@ -108,7 +112,6 @@ public class FeedService {
             temp.put("bookcomment", feed.getBookcomment());
 
 
-
             //微信用户
             String fromopenid = feed.getFromopenid();
             WxAccount wxAccount = wxAccountRepository.findByOpenid(feed.getOpenid());
@@ -155,8 +158,15 @@ public class FeedService {
 
 
             //喜欢
+
+            int isthisuserlike;
             int likecount = feedLikeRepository.selectFeedLikeCount(feed.getId());
-            int isthisuserlike = feedLikeRepository.selectCountByFeedIdOpenid(feed.getId(), feed.getOpenid());
+
+            if (wxAccount != null) {
+                isthisuserlike = feedLikeRepository.selectCountByFeedIdOpenid(feed.getId(), wxAccount.getOpenId());
+            } else {
+                isthisuserlike = 0;
+            }
 
             temp.put("likecount", likecount);
 
@@ -165,6 +175,10 @@ public class FeedService {
             } else {
                 temp.put("isliked", false);
             }
+
+            //折叠
+            temp.put("isFolded",true);
+
 
             jsonObjects.add(temp);
         }
@@ -178,6 +192,19 @@ public class FeedService {
 //        Feed[] feeds=feedRepository.findFeedByBookid(10,notin,bookid);
 //        return feedResopne(feeds,"bookid");
 //    }
+
+
+    public ArrayList<JSONObject> getFeedByBookList(int count, ArrayList<Integer> notin, String openid) {
+
+        return null;
+        //
+//        if()
+//        ArrayList<JSONObject> jo
+//
+//        Book[] books = bookService.selectAllBookLikeByOpenid(openid);
+//        Feed[] feeds=feedRepository.
+
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getFeedRand(int count, ArrayList<Integer> notin) {
@@ -205,5 +232,22 @@ public class FeedService {
         return feedResopne(feeds, "feedid");
     }
 
+
+    public boolean forwardFeed(String openid, int feedid) {
+        Feed feed = feedRepository.findById(feedid);
+        feed.setOpenid(openid);
+        feedRepository.insertByFeed(feed);
+        return true;
+    }
+
+    public boolean disForwardFeed(String openid, int feedid) {
+        Feed feed = feedRepository.findByIdAndOpenid(openid, feedid);
+
+        if (feed != null) {
+            feedRepository.deleteById(feed.getId());
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -42,5 +42,16 @@
     </select>
 
 
+    <select id="findFeedByBookids" resultType="com.ljqiii.model.Feed">
+
+        select * from feed where bookid in(
+        <foreach collection="books" separator="," item="item">
+            #{item.id}
+        </foreach>
+        )
+        order by feedtime limit #{count};
+    </select>
+
+
 </mapper>
 

@@ -105,4 +105,36 @@ public class FeedController {
         return responejson;
     }
 
+
+
+    @PostMapping("/forward")
+    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
+    public JSONObject forwardfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject){
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        int feedid = jsonObject.getInteger("feedid");
+
+        boolean result=feedService.forwardFeed(wxAccount.getOpenId(),feedid);
+
+        JSONObject responejson=new JSONObject();
+        responejson.put("isok",result);
+        return responejson;
+
+    }
+
+    @PostMapping("/disforward")
+    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
+    public JSONObject disForwardfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject){
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        int feedid = jsonObject.getInteger("feedid");
+
+        boolean result=feedService.disForwardFeed(wxAccount.getOpenId(),feedid);
+
+        JSONObject responejson=new JSONObject();
+        responejson.put("isok",result);
+        return responejson;
+
+    }
+
+
+
 }

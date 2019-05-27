@@ -1,5 +1,6 @@
 package com.ljqiii.dao;
 
+import com.ljqiii.model.Book;
 import com.ljqiii.model.Feed;
 import com.ljqiii.model.WxAccount;
 import org.apache.ibatis.annotations.*;
@@ -17,6 +18,9 @@ public interface FeedRepository {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertByFeed(Feed feed);
 
+
+    @Select("select * from feed where openid=#{openid} and id=#{feedid} limit 1")
+    Feed findByIdAndOpenid(@Param("openid") String openid, @Param("feedid") int feedid);
 
     @Select("select * from feed where openid=#{openid}")
     Feed[] findByOpenid(String openid);
@@ -36,5 +40,6 @@ public interface FeedRepository {
 
     Feed[] findFeedByOpenid(@Param("count") int count, @Param("notin") ArrayList<Integer> notin, @Param("openid") String openid);
 
+    Feed[] findFeedByBookids(@Param("count") int count, @Param("notin") ArrayList<Integer> notin, @Param("openid") String openid, @Param("books") Book[] books);
 
 }

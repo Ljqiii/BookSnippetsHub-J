@@ -71,6 +71,8 @@ public class BookController {
         return books2json(books);
     }
 
+
+
     @PreAuthorize("hasAuthority('ROLE_WXUSER')")
     @PostMapping("/islike")
     public JSONObject islike(WxAuthenticationToken wxAuthenticationToken,@RequestBody JSONObject requestjson){

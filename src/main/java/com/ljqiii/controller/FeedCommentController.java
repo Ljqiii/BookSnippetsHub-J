@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 @RestController
 public class FeedCommentController {
@@ -38,7 +39,17 @@ public class FeedCommentController {
 
         int feedid = requestjson.getInteger("feedid");
         String commentvalue = requestjson.getString("commentvalue");
+
+
+
         responejson.put("isok", feedCommentService.addFeedComment(openid, feedid, commentvalue));
+
+        JSONObject commentcontent=new JSONObject();
+        commentcontent.put("AvatarUrl",wxAccount.getAvatarUrl());
+        commentcontent.put("comment",commentvalue);
+        commentcontent.put("nickname",wxAccount.getNickName());
+
+        responejson.put("comment",commentcontent);
 
         return responejson;
     }

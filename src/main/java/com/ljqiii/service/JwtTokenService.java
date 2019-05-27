@@ -40,7 +40,7 @@ public class JwtTokenService {
 
         String token = JWT.create()
                 .withClaim("id", openid)
-                .withExpiresAt(date)
+//                .withExpiresAt(date)
                 .sign(JWT_ALGORITHM);
         return token;
     }
