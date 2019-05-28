@@ -142,12 +142,12 @@ public class FeedService {
 
 
             //评论
-            int userfeedcommentcount = feedCommentRepository.usercounts(feed.getId(), wxaccount.getOpenId());
-            if (userfeedcommentcount != 0) {
-                temp.put("iscomment", true);
-            } else {
-                temp.put("iscomment", false);
-            }
+//            int userfeedcommentcount =0;// feedCommentRepository.usercounts(feed.getId(), wxaccount.getOpenId());
+//            if (userfeedcommentcount != 0) {
+//                temp.put("iscomment", true);
+//            } else {
+//                temp.put("iscomment", false);
+//            }
             int feedcommentaccount = feedCommentRepository.count(feed.getId());
             temp.put("commentcount", feedcommentaccount);
 

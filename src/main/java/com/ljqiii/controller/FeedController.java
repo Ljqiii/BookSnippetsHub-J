@@ -72,7 +72,12 @@ public class FeedController {
 
     @PostMapping("/getrecommendfeed")
     public ArrayList<JSONObject> getrecommendfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
-        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        WxAccount wxAccount;
+        if(wxAuthenticationToken!=null){
+            wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        }else {
+            wxAccount=null;
+        }
         ArrayList<Integer> notin = requestjson.getObject("allrecommendfeedsid", ArrayList.class);
 
         return feedService.getFeedRand(10, notin,wxAccount);
