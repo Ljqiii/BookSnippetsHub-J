@@ -3,8 +3,11 @@ package com.ljqiii.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ljqiii.config.security.GrantedAuthority.WxAuthenticationToken;
+import com.ljqiii.dao.FeedRepository;
+import com.ljqiii.model.Feed;
 import com.ljqiii.model.WxAccount;
 import com.ljqiii.service.FeedCommentService;
+import com.ljqiii.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,14 +19,17 @@ import java.util.LinkedList;
 
 @RestController
 public class FeedCommentController {
+    @Autowired
+    FeedRepository feedRepository;
 
+    @Autowired
+    NotificationService notificationService;
 
     @Autowired
     FeedCommentService feedCommentService;
 
 
     @PostMapping("/getallcomment")
-
     public ArrayList<JSONObject> getallcomment(@RequestBody JSONObject requestjson) {
 
         return feedCommentService.getallByFeedId(requestjson.getInteger("feedid"));
@@ -37,7 +43,14 @@ public class FeedCommentController {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         String openid = wxAccount.getOpenId();
 
+
         int feedid = requestjson.getInteger("feedid");
+
+
+        Feed feed=feedRepository.findById(feedid);
+        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),wxAccount.getNickName()+"评论了你的分享");
+
+
         String commentvalue = requestjson.getString("commentvalue");
 
 

@@ -24,6 +24,7 @@ public class NotificationService {
         return insertNotification("0", toopenid, msg);
     }
 
+
     public boolean insertNotification(String fromopenid, String toopenid, String msg) {
         Notification notification = new Notification();
         notification.setFromopenid(fromopenid);

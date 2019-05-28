@@ -4,9 +4,11 @@ package com.ljqiii.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.ljqiii.config.security.GrantedAuthority.WxAuthenticationToken;
 import com.ljqiii.dao.FeedLikeRepository;
+import com.ljqiii.dao.FeedRepository;
 import com.ljqiii.model.Feed;
 import com.ljqiii.model.WxAccount;
 import com.ljqiii.service.FeedService;
+import com.ljqiii.service.NotificationService;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +23,14 @@ import java.util.ArrayList;
 public class FeedController {
 
     @Autowired
+    FeedRepository feedRepository;
+
+    @Autowired
     FeedService feedService;
 
+
+    @Autowired
+    NotificationService notificationService;
 
     @Autowired
     FeedLikeRepository feedLikeRepository;
@@ -48,24 +56,26 @@ public class FeedController {
 
     @PostMapping("/getbookfeed")
     public ArrayList<JSONObject> getFeedByBook(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         ArrayList<Integer> notin = requestjson.getObject("allfeedid", ArrayList.class);
         int bookid = requestjson.getInteger("bookid");
-        return feedService.getFeedByBookid(10, notin, bookid);
+        return feedService.getFeedByBookid(10, notin, bookid,wxAccount);
     }
 
     @PostMapping("/getfeed")
     public ArrayList<JSONObject> getFeedById(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         int feedid = requestjson.getInteger("feedid");
-        return feedService.getFeedById(feedid);
+        return feedService.getFeedById(feedid,wxAccount);
     }
 
 
     @PostMapping("/getrecommendfeed")
     public ArrayList<JSONObject> getrecommendfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
-//        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         ArrayList<Integer> notin = requestjson.getObject("allrecommendfeedsid", ArrayList.class);
 
-        return feedService.getFeedRand(1000, notin);
+        return feedService.getFeedRand(10, notin,wxAccount);
     }
 
 
@@ -73,10 +83,12 @@ public class FeedController {
     @PreAuthorize("hasAuthority('ROLE_WXUSER')")
     public ArrayList<JSONObject> getallmylikefeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
-//        ArrayList<Integer> notin = requestjson.getObject("allmylikefeedid", ArrayList.class);
-        ArrayList<Integer> notin=new ArrayList<>();
+        String openid=wxAccount.getOpenId();
 
-        return feedService.getFeedByOpenid(10, notin,wxAccount.getOpenId());
+        int alllikeid[]=feedLikeRepository.findallLike(openid);
+
+
+        return feedService.getFeedsbyId(alllikeid,wxAccount);
     }
 
 
@@ -85,6 +97,12 @@ public class FeedController {
     public JSONObject likefeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject) {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         int feedid = jsonObject.getInteger("feedid");
+
+
+        Feed feed=feedRepository.findById(feedid);
+        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),wxAccount.getNickName()+"喜欢了你的分享");
+
+
 
         feedLikeRepository.insert(feedid, wxAccount.getOpenId());
         JSONObject responejson = new JSONObject();
@@ -113,6 +131,11 @@ public class FeedController {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         int feedid = jsonObject.getInteger("feedid");
 
+        Feed feed=feedRepository.findById(feedid);
+        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),wxAccount.getNickName()+"转发了你的分享");
+
+
+
         boolean result=feedService.forwardFeed(wxAccount.getOpenId(),feedid);
 
         JSONObject responejson=new JSONObject();
@@ -132,9 +155,6 @@ public class FeedController {
         JSONObject responejson=new JSONObject();
         responejson.put("isok",result);
         return responejson;
-
     }
-
-
 
 }
