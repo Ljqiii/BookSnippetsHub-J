@@ -64,7 +64,12 @@ public class FeedController {
 
     @PostMapping("/getfeed")
     public ArrayList<JSONObject> getFeedById(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
-        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        WxAccount wxAccount;
+        if (wxAuthenticationToken!=null){
+            wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        }else {
+            wxAccount=null;
+        }
         int feedid = requestjson.getInteger("feedid");
         return feedService.getFeedById(feedid,wxAccount);
     }

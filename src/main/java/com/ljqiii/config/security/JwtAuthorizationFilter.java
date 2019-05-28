@@ -40,8 +40,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String token=request.getHeader("Authorization");
 
-        if(token!=null){
+        if(token!=null && !token.equals("")){
             try {
+                int a=123;
                 Integer id = jwtTokenService.VerifyToken(token);
                 UserDetails wxAccount = wxAccountRepository.findById(id);
                 ArrayList<SimpleGrantedAuthority> grantedAuthoritys = new ArrayList<>();
