@@ -40,6 +40,7 @@ public class FeedCommentController {
     public JSONObject addcomment(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
         JSONObject responejson = new JSONObject();
 
+
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         String openid = wxAccount.getOpenId();
 
@@ -48,10 +49,10 @@ public class FeedCommentController {
 
 
         Feed feed=feedRepository.findById(feedid);
-        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),wxAccount.getNickName()+"评论了你的分享");
 
 
         String commentvalue = requestjson.getString("commentvalue");
+        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),"评论了你的分享："+commentvalue);
 
 
 

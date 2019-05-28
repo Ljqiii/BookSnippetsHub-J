@@ -17,7 +17,7 @@ public interface NotificationRepository {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertByNotification(Notification notification);
 
-    @Select("select * from notification where toopenid=#{toopenid}")
+    @Select("select * from notification where toopenid=#{toopenid} order by id desc")
     Notification[] findByToopenid(String toopenid);
 
     @Select("select * from notification where id=#{id}")
