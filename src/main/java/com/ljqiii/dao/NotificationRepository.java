@@ -2,10 +2,7 @@ package com.ljqiii.dao;
 
 
 import com.ljqiii.model.Notification;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface NotificationRepository {
@@ -22,5 +19,8 @@ public interface NotificationRepository {
 
     @Select("select * from notification where id=#{id}")
     Notification findById(int id);
+
+    @Delete("delete from notification where id=#{id} and toopenid=#{toopenid}")
+    int delete(@Param("toopenid") String toopenid, @Param("id") int id);
 
 }

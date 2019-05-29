@@ -35,6 +35,16 @@ public class NotificationService {
         return true;
     }
 
+    public boolean deleteNotification(WxAccount wxAccount, int notificationid) {
+        String openid = wxAccount.getOpenId();
+        int delnum = notificationRepository.delete(openid, notificationid);
+        if (delnum >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public ArrayList<JSONObject> getAllNotificationByToOpenid(String toopenid) {
 
@@ -58,6 +68,7 @@ public class NotificationService {
                 temp.put("fromavatarurl", "/sysimg/sysnotification.png");
             }
             temp.put("msg", notification.getMsg());
+            temp.put("id", notification.getId());
 
             responejson.add(temp);
         }
