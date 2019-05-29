@@ -56,7 +56,13 @@ public class FeedController {
 
     @PostMapping("/getbookfeed")
     public ArrayList<JSONObject> getFeedByBook(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
-        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        WxAccount wxAccount;
+        if(wxAuthenticationToken!=null){
+            wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        }else {
+            wxAccount=null;
+        }
+
         ArrayList<Integer> notin = requestjson.getObject("allfeedid", ArrayList.class);
         int bookid = requestjson.getInteger("bookid");
         return feedService.getFeedByBookid(10, notin, bookid,wxAccount);
