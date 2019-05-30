@@ -67,7 +67,16 @@ public class NotificationService {
                 temp.put("fromnickname", "系统消息");
                 temp.put("fromavatarurl", "/sysimg/sysnotification.png");
             }
-            temp.put("msg", notification.getMsg());
+            String msg = notification.getMsg();
+            if (msg.contains("|")) {
+                String[] msgsplit = msg.split("\\|");
+                msg = msgsplit[1];
+                int feedid = Integer.valueOf(msgsplit[0]);
+                temp.put("feedid", feedid);
+            }
+            temp.put("msg", msg);
+
+
             temp.put("id", notification.getId());
 
             responejson.add(temp);

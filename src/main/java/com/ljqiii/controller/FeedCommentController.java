@@ -52,7 +52,7 @@ public class FeedCommentController {
 
 
         String commentvalue = requestjson.getString("commentvalue");
-        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),"评论了你的分享："+commentvalue);
+        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),String.valueOf(feedid)+"|评论了你的分享："+commentvalue);
 
 
 
