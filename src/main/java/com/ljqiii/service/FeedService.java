@@ -73,7 +73,35 @@ public class FeedService {
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> feedResopne(Feed[] feeds, String from,WxAccount wxaccount) {
+    public ArrayList<JSONObject> getfollowuserfeeds(WxAccount wxAccount,String from) {
+        if (wxAccount == null) {
+            return null;
+        } else {
+            String openid = wxAccount.getOpenId();
+            String[] followsopenid = followRepository.selectAllFollowsByOpenid(openid);
+            ArrayList<Feed> feeds = new ArrayList<>();
+
+            for (String followopenid : followsopenid) {
+                Feed[] temp = feedRepository.findByOpenid(followopenid);
+                for (Feed feed : temp) {
+                    feeds.add(feed);
+                }
+            }
+            return feedResopne(feeds,from,wxAccount);
+
+        }
+
+    }
+
+
+    public ArrayList<JSONObject> feedResopne(ArrayList<Feed> feeds, String from, WxAccount wxaccount) {
+        Feed[] feeds1 = (Feed[]) feeds.toArray(new Feed[feeds.size()]);
+        return feedResopne(feeds1, from, wxaccount);
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ArrayList<JSONObject> feedResopne(Feed[] feeds, String from, WxAccount wxaccount) {
 
         ArrayList<JSONObject> jsonObjects = new ArrayList<>();
 
@@ -131,10 +159,12 @@ public class FeedService {
             }
 
             //是否关注
-            String feedopenid = feed.getOpenid();
 
-            int c = followRepository.selectisfollow(feedwxaccount.getOpenId(), feedopenid);
-            if (c != 0) {
+            int isfollow = 0;
+            if (wxaccount != null) {
+                isfollow = followRepository.selectisfollow(wxaccount.getOpenId(), feed.getOpenid());
+            }
+            if (isfollow != 0) {
                 temp.put("isfollow", true);
             } else {
                 temp.put("isfollow", false);
@@ -179,7 +209,7 @@ public class FeedService {
             }
 
             //折叠
-            temp.put("isFolded",true);
+            temp.put("isFolded", true);
 
 
             jsonObjects.add(temp);
@@ -209,42 +239,42 @@ public class FeedService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> getFeedRand(int count, ArrayList<Integer> notin,WxAccount wxAccount) {
+    public ArrayList<JSONObject> getFeedRand(int count, ArrayList<Integer> notin, WxAccount wxAccount) {
         Feed[] feeds = feedRepository.findFeedRand(count, notin);
-        return feedResopne(feeds, "recommand",wxAccount);
+        return feedResopne(feeds, "recommand", wxAccount);
     }
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> getFeedByBookid(int count, ArrayList<Integer> notin, int bookid,WxAccount wxAccount) {
+    public ArrayList<JSONObject> getFeedByBookid(int count, ArrayList<Integer> notin, int bookid, WxAccount wxAccount) {
         Feed[] feeds = feedRepository.findFeedByBookid(count, notin, bookid);
-        return feedResopne(feeds, "book",wxAccount);
+        return feedResopne(feeds, "book", wxAccount);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getFeedByOpenid(int count, ArrayList<Integer> notin, String openid) {
         Feed[] feeds = feedRepository.findFeedByOpenid(count, notin, openid);
-        WxAccount wxAccount=wxAccountRepository.findByOpenid(openid);
-        return feedResopne(feeds, "openid",wxAccount);
+        WxAccount wxAccount = wxAccountRepository.findByOpenid(openid);
+        return feedResopne(feeds, "openid", wxAccount);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> getFeedsbyId(int feedids[],WxAccount wxAccount){
+    public ArrayList<JSONObject> getFeedsbyId(int feedids[], WxAccount wxAccount) {
 
-        Feed[] feeds=new Feed[feedids.length];
-        int i=0;
+        Feed[] feeds = new Feed[feedids.length];
+        int i = 0;
         for (int feedid : feedids) {
-            feeds[i++]=feedRepository.findById(feedid);
+            feeds[i++] = feedRepository.findById(feedid);
         }
-        return feedResopne(feeds,"myfav",wxAccount);
+        return feedResopne(feeds, "myfav", wxAccount);
     }
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> getFeedById(int bookid,WxAccount wxAccount) {
+    public ArrayList<JSONObject> getFeedById(int bookid, WxAccount wxAccount) {
         Feed[] feeds = new Feed[1];
         feeds[0] = feedRepository.findById(bookid);
-        return feedResopne(feeds, "feedid",wxAccount);
+        return feedResopne(feeds, "feedid", wxAccount);
     }
 
 

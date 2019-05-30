@@ -12,10 +12,7 @@ import com.ljqiii.service.NotificationService;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -57,54 +54,56 @@ public class FeedController {
     @PostMapping("/getbookfeed")
     public ArrayList<JSONObject> getFeedByBook(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
         WxAccount wxAccount;
-        if(wxAuthenticationToken!=null){
+        if (wxAuthenticationToken != null) {
             wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
-        }else {
-            wxAccount=null;
+        } else {
+            wxAccount = null;
         }
 
         ArrayList<Integer> notin = requestjson.getObject("allfeedid", ArrayList.class);
         int bookid = requestjson.getInteger("bookid");
-        return feedService.getFeedByBookid(10, notin, bookid,wxAccount);
+        return feedService.getFeedByBookid(10, notin, bookid, wxAccount);
     }
 
     @PostMapping("/getfeed")
     public ArrayList<JSONObject> getFeedById(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
         WxAccount wxAccount;
-        if (wxAuthenticationToken!=null){
+        if (wxAuthenticationToken != null) {
             wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
-        }else {
-            wxAccount=null;
+        } else {
+            wxAccount = null;
         }
         int feedid = requestjson.getInteger("feedid");
-        return feedService.getFeedById(feedid,wxAccount);
+        return feedService.getFeedById(feedid, wxAccount);
     }
 
 
     @PostMapping("/getrecommendfeed")
     public ArrayList<JSONObject> getrecommendfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
         WxAccount wxAccount;
-        if(wxAuthenticationToken!=null){
+        if (wxAuthenticationToken != null) {
             wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
-        }else {
-            wxAccount=null;
+        } else {
+            wxAccount = null;
         }
         ArrayList<Integer> notin = requestjson.getObject("allrecommendfeedsid", ArrayList.class);
 
-        return feedService.getFeedRand(10, notin,wxAccount);
+        return feedService.getFeedRand(10, notin, wxAccount);
     }
 
 
     @PostMapping("/getallmylikefeed")
     @PreAuthorize("hasAuthority('ROLE_WXUSER')")
     public ArrayList<JSONObject> getallmylikefeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject requestjson) {
+
+
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
-        String openid=wxAccount.getOpenId();
+        String openid = wxAccount.getOpenId();
 
-        int alllikeid[]=feedLikeRepository.findallLike(openid);
+        int alllikeid[] = feedLikeRepository.findallLike(openid);
 
 
-        return feedService.getFeedsbyId(alllikeid,wxAccount);
+        return feedService.getFeedsbyId(alllikeid, wxAccount);
     }
 
 
@@ -115,9 +114,8 @@ public class FeedController {
         int feedid = jsonObject.getInteger("feedid");
 
 
-        Feed feed=feedRepository.findById(feedid);
-        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),wxAccount.getNickName()+"喜欢了你的分享");
-
+        Feed feed = feedRepository.findById(feedid);
+        notificationService.insertNotification(wxAccount.getOpenId(), feed.getOpenid(), wxAccount.getNickName() + "喜欢了你的分享");
 
 
         feedLikeRepository.insert(feedid, wxAccount.getOpenId());
@@ -140,37 +138,54 @@ public class FeedController {
     }
 
 
-
     @PostMapping("/forward")
     @PreAuthorize("hasAuthority('ROLE_WXUSER')")
-    public JSONObject forwardfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject){
+    public JSONObject forwardfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject) {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         int feedid = jsonObject.getInteger("feedid");
 
-        Feed feed=feedRepository.findById(feedid);
-        notificationService.insertNotification(wxAccount.getOpenId(),feed.getOpenid(),wxAccount.getNickName()+"转发了你的分享");
+        Feed feed = feedRepository.findById(feedid);
+        notificationService.insertNotification(wxAccount.getOpenId(), feed.getOpenid(), wxAccount.getNickName() + "转发了你的分享");
 
 
+        boolean result = feedService.forwardFeed(wxAccount.getOpenId(), feedid);
 
-        boolean result=feedService.forwardFeed(wxAccount.getOpenId(),feedid);
-
-        JSONObject responejson=new JSONObject();
-        responejson.put("isok",result);
+        JSONObject responejson = new JSONObject();
+        responejson.put("isok", result);
         return responejson;
 
     }
 
     @PostMapping("/disforward")
     @PreAuthorize("hasAuthority('ROLE_WXUSER')")
-    public JSONObject disForwardfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject){
+    public JSONObject disForwardfeed(WxAuthenticationToken wxAuthenticationToken, @RequestBody JSONObject jsonObject) {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         int feedid = jsonObject.getInteger("feedid");
 
-        boolean result=feedService.disForwardFeed(wxAccount.getOpenId(),feedid);
+        boolean result = feedService.disForwardFeed(wxAccount.getOpenId(), feedid);
 
-        JSONObject responejson=new JSONObject();
-        responejson.put("isok",result);
+        JSONObject responejson = new JSONObject();
+        responejson.put("isok", result);
         return responejson;
     }
+
+    @GetMapping("/getfollowuserfeed")
+    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
+    public ArrayList<JSONObject> getfollowuserfeed(WxAuthenticationToken wxAuthenticationToken) {
+        WxAccount wxAccount;
+        if (wxAuthenticationToken != null) {
+            wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+            String from = "allfollow";
+
+            ArrayList<JSONObject> respone= feedService.getfollowuserfeeds(wxAccount, from);
+            return respone;
+        } else {
+            wxAccount = null;
+
+
+            return new ArrayList<JSONObject>();
+        }
+    }
+
 
 }

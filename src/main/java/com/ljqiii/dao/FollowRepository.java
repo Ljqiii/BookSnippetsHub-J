@@ -20,14 +20,23 @@ public interface FollowRepository {
     int selectFollowsCountByWxaccount(WxAccount wxAccount);
 
     @Select("select count(*) from follow where openid=#{openId}")
-    int selectFollowsCountByOpenId(String openid);
+    int selectFollowsCountByOpenId(@Param("openid") String openid);
 
     @Delete("delete from follow where openid=#{openid} and followopenid=#{followopenid}")
     int removeFollowerByFollow(Follow follow);
 
-    @Select("select  * from follow where openid=#{openid}")
-    String[] selectAllFollowsByOpenid(String openid);
+    @Select("select  followopenid from follow where openid=#{openid}")
+    String[] selectAllFollowsByOpenid(@Param("openid") String openid);
+
+    @Select("select openid from follow where followopenid=#{followopenid}")
+    String[] selectAllFollowersByOpenid(@Param("followopenid") String followopenid);
 
     @Select("select count(*) from follow where openid=#{openid} and followopenid=#{followopenid}")
-    int selectisfollow(@Param("openid") String openid,@Param("followopenid") String followopenid);
+    int selectisfollow(@Param("openid") String openid, @Param("followopenid") String followopenid);
+
+    @Insert("insert into follow(openid, followopenid) values (#{openid},#{followopenid})")
+    int insert(@Param("openid") String openid, @Param("followopenid") String followopenid);
+
+    @Delete("delete from follow where openid=#{openid} and followopenid=#{followopenid}")
+    int delete(@Param("openid") String openid, @Param("followopenid") String followopenid);
 }
