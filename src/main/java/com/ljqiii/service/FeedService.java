@@ -239,6 +239,15 @@ public class FeedService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    public ArrayList<JSONObject> getAllMyFeed(WxAccount wxAccount) {
+        String openid=wxAccount.getOpenId();
+        Feed[] feeds=feedRepository.findByOpenid(openid);
+
+        return feedResopne(feeds,"my",wxAccount);
+    }
+
+
+        @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getFeedRand(int count, ArrayList<Integer> notin, WxAccount wxAccount) {
         Feed[] feeds = feedRepository.findFeedRand(count, notin);
         return feedResopne(feeds, "recommand", wxAccount);

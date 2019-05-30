@@ -22,7 +22,7 @@ public interface FeedRepository {
     @Select("select * from feed where openid=#{openid} and id=#{feedid} limit 1")
     Feed findByIdAndOpenid(@Param("openid") String openid, @Param("feedid") int feedid);
 
-    @Select("select * from feed where openid=#{openid}")
+    @Select("select * from feed where openid=#{openid} order by id desc")
     Feed[] findByOpenid(String openid);
 
     @Delete("delete from feed where id=#{id}")

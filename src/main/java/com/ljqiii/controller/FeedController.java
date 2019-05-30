@@ -177,7 +177,7 @@ public class FeedController {
             wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
             String from = "allfollow";
 
-            ArrayList<JSONObject> respone= feedService.getfollowuserfeeds(wxAccount, from);
+            ArrayList<JSONObject> respone = feedService.getfollowuserfeeds(wxAccount, from);
             return respone;
         } else {
             wxAccount = null;
@@ -187,5 +187,10 @@ public class FeedController {
         }
     }
 
-
+    @GetMapping("/getallmyfeed")
+    @PreAuthorize("hasAuthority('ROLE_WXUSER')")
+    public ArrayList<JSONObject> getallmyfeed(WxAuthenticationToken wxAuthenticationToken) {
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        return feedService.getAllMyFeed(wxAccount);
+    }
 }

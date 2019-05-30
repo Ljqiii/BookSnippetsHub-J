@@ -13,7 +13,7 @@ public interface FeedLikeRepository {
     @Select("select count(*) from feedlike where feedid=#{feedid}")
     int selectFeedLikeCount(@Param("feedid") int feedid);
 
-    @Select("select feedid from feedlike where openid=#{openid}")
+    @Select("select feedid from feedlike where openid=#{openid} order by feedid desc")
     int[] findallLike(@Param("openid") String openid);
 
     @Insert("insert into feedlike(feedid, openid) values (#{feedid},#{openid})")
