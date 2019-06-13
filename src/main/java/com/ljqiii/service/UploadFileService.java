@@ -12,20 +12,24 @@ import java.util.UUID;
 @Service
 public class UploadFileService {
 
-    String basePath;
+    String uploadFileBasePath;
+    String userResourceBasePath;
 
     @Autowired
-    public UploadFileService(@Value("${xyz.ljqiii.uploadedfilepath}") String path) {
+    public UploadFileService(@Value("${xyz.ljqiii.uploadedfilepath}") String path, @Value("${xyz.ljqiii.userresource}") String path2) {
+
         if (path.endsWith("/")) {
-            this.basePath = path;
+            this.uploadFileBasePath = path;
         } else {
-            this.basePath = path + "/";
+            this.uploadFileBasePath = path + "/";
         }
-    }
 
+        if (path2.endsWith("/")) {
+            this.userResourceBasePath = path;
+        } else {
+            this.userResourceBasePath = path + "/";
+        }
 
-    public String uuidImg(MultipartFile file) throws IOException {
-        return uuidFile(file,"img/");
     }
 
 
@@ -45,12 +49,34 @@ public class UploadFileService {
         if (!extnmae.equals("")) {
             tempName = tempName + "." + extnmae;
         }
-        String pathname = basePath +subpath+ tempName;
+        String pathname = uploadFileBasePath + subpath + tempName;
 
         File tempFile = new File(pathname);
         file.transferTo(tempFile);
 
         return tempName;
     }
+
+
+    public boolean uploadFile(MultipartFile file, String basePath, String subpath, boolean overwrite) throws IOException {
+
+        if (!subpath.endsWith("/")) {
+            subpath = subpath + "/";
+        }
+        String originalFilename = file.getOriginalFilename();
+        String pathname = basePath + subpath + originalFilename;
+
+        File tempFile = new File(pathname);
+
+        if (overwrite != true) {
+            if (tempFile.exists()) {
+                return false;
+            }
+        }
+        file.transferTo(tempFile);
+
+        return true;
+    }
+
 
 }

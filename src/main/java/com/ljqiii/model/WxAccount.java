@@ -20,6 +20,8 @@ public class WxAccount implements UserDetails {
     String province;
     String country;
     String avatarUrl;
+    String encodedPassword;
+
 
     public WxAccount(String openId, String sessionKey) {
         this.openId = openId;
@@ -98,7 +100,22 @@ public class WxAccount implements UserDetails {
         this.avatarUrl = avatarUrl;
     }
 
-    public WxAccount(int id, String openId, String sessionKey, String nickName, String gender, String city, String province, String country, String avatarUrl) {
+    public String getEncodedPassword() {
+        return encodedPassword;
+    }
+
+    public void setEncodedPassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
+    }
+
+
+    public WxAccount(String openId, String nickName, String encodedPassword) {
+        this.openId = openId;
+        this.nickName = nickName;
+        this.encodedPassword = encodedPassword;
+    }
+
+    public WxAccount(int id, String openId, String sessionKey, String nickName, String gender, String city, String province, String country, String avatarUrl, String encodedPassword) {
         this.id = id;
         this.openId = openId;
         this.sessionKey = sessionKey;
@@ -108,6 +125,7 @@ public class WxAccount implements UserDetails {
         this.province = province;
         this.country = country;
         this.avatarUrl = avatarUrl;
+        this.encodedPassword = encodedPassword;
     }
 
 

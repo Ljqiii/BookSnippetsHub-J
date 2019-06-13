@@ -58,11 +58,13 @@ public class test {
 
     @PostMapping("/testupload")
     public String testupload(@RequestParam("file") MultipartFile file) throws IOException {
-        return uploadFileService.uuidImg(file);
+//        return uploadFileService.uuidImg(file);
+        return "sdf";
     }
+
     @GetMapping("/testuser")
-    public String tu(Principal principal){
-        int a=1;
+    public String tu(Principal principal) {
+        int a = 1;
         return principal.toString();
     }
 
@@ -100,8 +102,8 @@ public class test {
     }
 
     @RequestMapping("/test3")
-    public String aa(Model model) {
-        model.addAttribute("a", "aa");
+    public String aa(JSONObject requestjson, MultipartFile f) {
+
 
         return "index";
     }

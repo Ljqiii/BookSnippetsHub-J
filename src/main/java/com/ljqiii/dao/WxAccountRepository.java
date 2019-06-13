@@ -6,10 +6,19 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 @Mapper
 public interface WxAccountRepository {
+
+
+    @Insert("insert into wxAccount(openid,nickName,encodedPassword)value(#{openId},#{nickName},#{encodedPassword})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertByNickNameEncodedPassword(WxAccount wxAccount);
+
+    @Select("select count(*) from wxAccount where nickName=#{nickName}")
+    int selectNicknamecount(@Param("nickName") String nickName);
 
     @Select("select * from wxaccount where openid=#{openid} limit 1")
     WxAccount findByOpenid(String openid);
@@ -26,9 +35,11 @@ public interface WxAccountRepository {
     @Update("update wxaccount set nickname=#{nickName},gender=#{gender},city=#{city},province=#{province},country=#{country},avatarUrl=#{avatarUrl} where id=#{id}")
     int updateByWxAccount(WxAccount wxAccount);
 
-    JSONObject selectAllNotification(WxAccount wxAccount);
 
     @Select("select nickname from wxaccount where openId=#{openid}")
     String findNickNameByOpenid(String openid);
+
+    @Select("select * from wxAccount where nickName=#{nickname}")
+    List<WxAccount> selectByNickName(@Param("nickname") String nickname);
 
 }

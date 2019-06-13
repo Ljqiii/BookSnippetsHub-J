@@ -7,9 +7,6 @@ import com.ljqiii.model.WxAccount;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,11 +14,16 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 
 @Service
-public class WxAccountServiceImpl implements  WxAccountService{
+public class WxAccountServiceImpl implements WxAccountService {
+    @Autowired
+    PasswordService passwordService;
 
+    @Autowired
+    WxAccountRepository wxAccountRepository;
 
     @Autowired
     RestTemplate restTemplate;
@@ -32,6 +34,28 @@ public class WxAccountServiceImpl implements  WxAccountService{
     @Value("${wx.secert}")
     String secret;
 
+    public boolean isNicknameExist(String nickName) {
+        int count = wxAccountRepository.selectNicknamecount(nickName);
+        if (count == 0) return false;
+        return true;
+    }
+
+
+    @Override
+    public WxAccount addAccount(String nickName, String password) {
+        String uuid = UUID.randomUUID().toString();
+        String encodedPassword = passwordService.encode(password);
+
+        int insertcount = 0;
+        WxAccount newAccount = new WxAccount(uuid, nickName, encodedPassword);
+
+        try {
+            insertcount = wxAccountRepository.insertByNickNameEncodedPassword(newAccount);
+        } catch (org.springframework.dao.DuplicateKeyException e) {
+            addAccount(nickName, password);
+        }
+        return newAccount;
+    }
 
     public String code2Session(String js_code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session";

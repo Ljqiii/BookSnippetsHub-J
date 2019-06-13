@@ -1,13 +1,12 @@
 package com.ljqiii.config;
 
-import com.ljqiii.config.security.JwtAuthorizationFilter;
-import com.ljqiii.config.security.JwtLoginAuthorizationFilter;
-import com.ljqiii.config.security.JwtLoginAuthorizationManager;
+import com.ljqiii.config.security.*;
 import com.ljqiii.service.WxUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,6 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
+        http.authorizeRequests().antMatchers(HttpMethod.POST,"/signup").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.POST,"/restlogin").permitAll();
+
         http.authorizeRequests().antMatchers("/error").permitAll();
         http.authorizeRequests().antMatchers("/druid/**").permitAll();
         http.authorizeRequests().antMatchers("/**").permitAll();
@@ -64,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(jwtAuthorizationManager), UsernamePasswordAuthenticationFilter.class);
-    }
+     }
 
 
 }
