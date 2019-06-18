@@ -41,6 +41,11 @@ public class WxAccountServiceImpl implements WxAccountService {
     }
 
 
+    public WxAccount getWxAccount(int id){
+        return wxAccountRepository.findById(id);
+    }
+
+
     @Override
     public WxAccount addAccount(String nickName, String password) {
         String uuid = UUID.randomUUID().toString();

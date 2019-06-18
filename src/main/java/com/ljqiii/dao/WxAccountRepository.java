@@ -21,10 +21,10 @@ public interface WxAccountRepository {
     int selectNicknamecount(@Param("nickName") String nickName);
 
     @Select("select * from wxaccount where openid=#{openid} limit 1")
-    WxAccount findByOpenid(String openid);
+    WxAccount findByOpenid(@Param("openid") String openid);
 
     @Select("select * from wxaccount where id=#{id} limit 1")
-    WxAccount findById(Integer id);
+    WxAccount findById(@Param("id") Integer id);
 
 
     @Insert("insert into wxaccount (openid,session_key) value(#{openId},#{sessionKey})")
@@ -37,7 +37,7 @@ public interface WxAccountRepository {
 
 
     @Select("select nickname from wxaccount where openId=#{openid}")
-    String findNickNameByOpenid(String openid);
+    String findNickNameByOpenid(@Param("openid") String openid);
 
     @Select("select * from wxAccount where nickName=#{nickname}")
     List<WxAccount> selectByNickName(@Param("nickname") String nickname);

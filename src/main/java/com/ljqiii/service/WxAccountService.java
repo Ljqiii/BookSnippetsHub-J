@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface WxAccountService {
+    public WxAccount getWxAccount(int id);
 
     public WxAccount addAccount(String nickName, String password);
 
