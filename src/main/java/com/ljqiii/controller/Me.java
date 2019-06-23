@@ -6,7 +6,6 @@ import com.ljqiii.config.security.GrantedAuthority.WxAuthenticationToken;
 import com.ljqiii.dao.FeedRepository;
 import com.ljqiii.dao.FollowRepository;
 import com.ljqiii.model.WxAccount;
-import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

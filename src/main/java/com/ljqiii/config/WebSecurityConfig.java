@@ -44,22 +44,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //        http.authorizeRequests().antMatchers("/auth/wxlogin").permitAll();
 
+        //禁用csrf
         http.csrf().disable();
 
+
+        //监控
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/actuator/**").hasIpAddress("127.0.0.1");
+        http.authorizeRequests().antMatchers("/druid/**").hasIpAddress("127.0.0.1");
+
+        //ico
+        http.authorizeRequests().antMatchers("/favicon.ico").permitAll();
+
+        //登录
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/signup").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/restlogin").permitAll();
 
+        //错误
         http.authorizeRequests().antMatchers("/error").permitAll();
-        http.authorizeRequests().antMatchers("/druid/**").permitAll();
-        http.authorizeRequests().antMatchers("/**").permitAll();
+
+        //静态资源
         http.authorizeRequests().antMatchers("/sysimg/**").permitAll();
+
+        //测试用
         http.authorizeRequests().antMatchers("/test**").permitAll();
-        http.authorizeRequests().antMatchers("/favicon.ico").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/test**").permitAll();
         http.authorizeRequests().antMatchers("/hello").permitAll();
 
-//        http.authorizeRequests().anyRequest().authenticated();
-        http.authorizeRequests().anyRequest().permitAll();
 
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
