@@ -13,11 +13,11 @@ import java.util.List;
 public interface WxAccountRepository {
 
 
-    @Insert("insert into wxAccount(openid,nickName,encodedPassword)value(#{openId},#{nickName},#{encodedPassword})")
+    @Insert("insert into wxaccount(openid,nickName,encodedPassword)value(#{openId},#{nickName},#{encodedPassword})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertByNickNameEncodedPassword(WxAccount wxAccount);
 
-    @Select("select count(*) from wxAccount where nickName=#{nickName}")
+    @Select("select count(*) from wxaccount where nickName=#{nickName}")
     int selectNicknamecount(@Param("nickName") String nickName);
 
     @Select("select * from wxaccount where openid=#{openid} limit 1")
@@ -39,7 +39,7 @@ public interface WxAccountRepository {
     @Select("select nickname from wxaccount where openId=#{openid}")
     String findNickNameByOpenid(@Param("openid") String openid);
 
-    @Select("select * from wxAccount where nickName=#{nickname}")
+    @Select("select * from wxaccount where nickName=#{nickname}")
     List<WxAccount> selectByNickName(@Param("nickname") String nickname);
 
 }
