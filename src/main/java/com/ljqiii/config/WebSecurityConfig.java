@@ -65,6 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //静态资源
         http.authorizeRequests().antMatchers("/sysimg/**").permitAll();
 
+
         //测试用
         http.authorizeRequests().antMatchers("/test**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/test**").permitAll();
