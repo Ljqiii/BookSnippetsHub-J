@@ -168,6 +168,8 @@ public class FeedController {
         return responejson;
     }
 
+
+    @PostMapping("/getfollowuserfeed")
     @GetMapping("/getfollowuserfeed")
     @PreAuthorize("hasAuthority('ROLE_WXUSER')")
     public ArrayList<JSONObject> getfollowuserfeed(WxAuthenticationToken wxAuthenticationToken) {
