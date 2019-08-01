@@ -25,6 +25,9 @@ public interface FeedRepository {
     @Select("select * from feed where openid=#{openid} order by id desc")
     Feed[] findByOpenid(String openid);
 
+    @Select("select * from feed where match(bookcontent) against(#{keyword} in natural language mode)")
+    Feed[] findAllByKeyword(@Param("keyword") String keyword);
+
     @Delete("delete from feed where id=#{id}")
     int deleteById(int id);
 

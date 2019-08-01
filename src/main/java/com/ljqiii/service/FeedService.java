@@ -6,6 +6,7 @@ import com.ljqiii.dao.*;
 import com.ljqiii.model.*;
 import com.ljqiii.utils.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +74,7 @@ public class FeedService {
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public ArrayList<JSONObject> getfollowuserfeeds(WxAccount wxAccount,String from) {
+    public ArrayList<JSONObject> getfollowuserfeeds(WxAccount wxAccount, String from) {
         if (wxAccount == null) {
             return null;
         } else {
@@ -87,7 +88,7 @@ public class FeedService {
                     feeds.add(feed);
                 }
             }
-            return feedResopne(feeds,from,wxAccount);
+            return feedResopne(feeds, from, wxAccount);
 
         }
 
@@ -219,12 +220,6 @@ public class FeedService {
     }
 
 
-//    @Transactional(propagation = Propagation.REQUIRED)
-//    public ArrayList<JSONObject> getFeedByBook(int count, ArrayList<Integer> notin,int bookid) {
-//        Feed[] feeds=feedRepository.findFeedByBookid(10,notin,bookid);
-//        return feedResopne(feeds,"bookid");
-//    }
-
 
     public ArrayList<JSONObject> getFeedByBookList(int count, ArrayList<Integer> notin, String openid) {
 
@@ -240,14 +235,14 @@ public class FeedService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getAllMyFeed(WxAccount wxAccount) {
-        String openid=wxAccount.getOpenId();
-        Feed[] feeds=feedRepository.findByOpenid(openid);
+        String openid = wxAccount.getOpenId();
+        Feed[] feeds = feedRepository.findByOpenid(openid);
 
-        return feedResopne(feeds,"my",wxAccount);
+        return feedResopne(feeds, "my", wxAccount);
     }
 
 
-        @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public ArrayList<JSONObject> getFeedRand(int count, ArrayList<Integer> notin, WxAccount wxAccount) {
         Feed[] feeds = feedRepository.findFeedRand(count, notin);
         return feedResopne(feeds, "recommand", wxAccount);
@@ -302,6 +297,15 @@ public class FeedService {
             return true;
         }
         return false;
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Cacheable(value= "searchfeed",key = "#root.args[0]")
+    public ArrayList<JSONObject> search(String keyword,WxAccount wxAccount) {
+        Feed[] feeds = feedRepository.findAllByKeyword(keyword);
+        ArrayList<JSONObject> searchfeeds = feedResopne(feeds, "search", wxAccount);
+        return searchfeeds;
     }
 
 }

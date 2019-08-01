@@ -194,4 +194,24 @@ public class FeedController {
         WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
         return feedService.getAllMyFeed(wxAccount);
     }
+
+
+    @GetMapping("/search")
+    public JSONObject searchFeed(@RequestParam("keyword") String keyword,WxAuthenticationToken wxAuthenticationToken) {
+        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        ArrayList<Feed> feeds = null;
+        JSONObject jsonObject = new JSONObject();
+
+        if (keyword.length() < 2) {
+            jsonObject.put("error", 1);
+            jsonObject.put("errmsg", "关键字不能小于2");
+            jsonObject.put("feeds", feeds);
+            return jsonObject;
+        }
+
+        jsonObject.put("error", 0);
+        jsonObject.put("feeds", feedService.search(keyword,wxAccount));
+
+        return jsonObject;
+    }
 }
