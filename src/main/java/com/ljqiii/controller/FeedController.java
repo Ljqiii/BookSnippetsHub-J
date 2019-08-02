@@ -196,9 +196,12 @@ public class FeedController {
     }
 
 
-    @GetMapping("/search")
-    public JSONObject searchFeed(@RequestParam("keyword") String keyword,WxAuthenticationToken wxAuthenticationToken) {
-        WxAccount wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+    @GetMapping("/searchfeed")
+    public JSONObject searchFeed(@RequestParam("keyword") String keyword, WxAuthenticationToken wxAuthenticationToken) {
+        WxAccount wxAccount = null;
+        if (wxAuthenticationToken != null) {
+            wxAccount = (WxAccount) wxAuthenticationToken.getPrincipal();
+        }
         ArrayList<Feed> feeds = null;
         JSONObject jsonObject = new JSONObject();
 
@@ -210,7 +213,7 @@ public class FeedController {
         }
 
         jsonObject.put("error", 0);
-        jsonObject.put("feeds", feedService.search(keyword,wxAccount));
+        jsonObject.put("feeds", feedService.search(keyword, wxAccount));
 
         return jsonObject;
     }
