@@ -11,7 +11,7 @@
 - java-JWT
 
 ## 前端地址
-- Android: [booksnippetshub/BookSnippetsHub-android](https://github.com/booksnippetshub/BookSnippetsHub-android)
+- Android: [EmptyAlley/BookSnippetsHub-android](https://github.com/EmptyAlley/BookSnippetsHub-android)
 - 微信小程序: [Ljqiii/BookSnippetsHub-wechat](https://github.com/Ljqiii/BookSnippetsHub-wechat)
     > 在 [18e885d](https://github.com/Ljqiii/BookSnippetsHub-J/commit/18e885d90354dd8993a37990fcd530f7faf449f6) 之后不再更新
 
